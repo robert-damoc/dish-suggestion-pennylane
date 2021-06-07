@@ -26,17 +26,17 @@ ActiveRecord::Schema.define(version: 2021_06_07_202056) do
     t.integer "people_quantity"
     t.string "budget"
     t.string "difficulty"
-    t.decimal "rate"
+    t.float "rate"
     t.string "author_tip"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "recipes_tags", force: :cascade do |t|
-    t.bigint "recipes_id"
-    t.bigint "tags_id"
-    t.index ["recipes_id"], name: "index_recipes_tags_on_recipes_id"
-    t.index ["tags_id"], name: "index_recipes_tags_on_tags_id"
+    t.bigint "recipe_id"
+    t.bigint "tag_id"
+    t.index ["recipe_id"], name: "index_recipes_tags_on_recipe_id"
+    t.index ["tag_id"], name: "index_recipes_tags_on_tag_id"
   end
 
   create_table "tags", force: :cascade do |t|

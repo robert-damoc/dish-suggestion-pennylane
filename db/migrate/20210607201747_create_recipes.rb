@@ -11,7 +11,7 @@ class CreateRecipes < ActiveRecord::Migration[6.0]
       t.integer :people_quantity
       t.string :budget
       t.string :difficulty
-      t.decimal :rate
+      t.float :rate
       t.string :author_tip
 
       t.timestamps
