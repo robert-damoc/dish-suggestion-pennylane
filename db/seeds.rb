@@ -1,44 +1,35 @@
 require 'json'
 
-file = File.read(Rails.root.join('db', 'recipes.json'))
-data_hash = JSON.parse(file, symbolize_names: true)
+def json_file_to_hash(filename)
+  file = File.read(Rails.root.join('db', filename))
 
-recipes = data_hash[:recipes]
+  JSON.parse(file, symbolize_names: true)
+end
 
-# recipes = [{
-#   "rate": "5",
-#   "author_tip": "",
-#   "budget": "bon marché",
-#   "prep_time": "1h15",
-#   "ingredients": [
-#     "600g de pâte à crêpe",
-#     "1/2 orange",
-#     "1/2 banane",
-#     "1/2 poire pochée",
-#     "1poignée de framboises",
-#     "75g de Nutella®",
-#     "1poignée de noisettes torréfiées",
-#     "1/2poignée d'amandes concassées",
-#     "1cuillère à café d'orange confites en dés",
-#     "2cuillères à café de noix de coco rapée",
-#     "1/2poignée de pistache concassées",
-#     "2cuillères à soupe d'amandes effilées"
-#   ],
-#   "name": "6 ingrédients que l’on peut ajouter sur une crêpe au Nutella®",
-#   "author": "Nutella",
-#   "difficulty": "très facile",
-#   "people_quantity": "6",
-#   "cook_time": "1h10 min",
-#   "tags": [
-#     "Crêpe",
-#     "Crêpes sucrées",
-#     "Végétarien",
-#     "Dessert"
-#   ],
-#   "total_time": "25 min",
-#   "image": "https://assets.afcdn.com/recipe/20171006/72810_w420h344c1cx2544cy1696cxt0cyt0cxb5088cyb3392.jpg",
-#   "nb_comments": "1"
-# }.with_indifferent_access]
+def recipes
+  @recipes ||= begin
+    data_hash = json_file_to_hash('recipes.json')
+
+    data_hash[:recipes]
+  end
+end
+
+def ingredients
+  @ingredients ||= begin
+    data_hash = json_file_to_hash('ingredients.json')
+
+    data_hash[:ingredients]
+  end
+end
+
+def sample_ingredients
+  @sample_ingredients ||=
+    ingredients.map do |title|
+      Ingredient.find_or_create_by(title: title) do |ingredient|
+        ingredient.unit = Ingredient.units.values.sample
+      end
+    end
+end
 
 SPLIT_DURATIONS_REGEX = /\d+\D*/.freeze
 SPLIT_TIME_REGEX = /(\d+)(\D*)/.freeze
@@ -62,29 +53,35 @@ def duration_to_minutes(time_duration)
   minutes
 end
 
-recipes.each do |recipe_hash|
-  # TODO: add ingredients after defining the structure
-  _ingredients = recipe_hash.delete(:ingredients)
+def create_recipes
+  ingredients = sample_ingredients
 
-  tags = recipe_hash.delete(:tags).map do |tag|
-    Tag.find_or_create_by(title: tag)
-  end
+  recipes.each do |recipe_hash|
+    ingredients_count = recipe_hash.delete(:ingredients).count
 
-  Recipe.find_or_create_by(name: recipe_hash[:name]) do |recipe|
-    recipe.author = recipe_hash[:author]
-    recipe.author_tip = recipe_hash[:author_tip]
-    recipe.budget = recipe_hash[:budget]
-    recipe.difficulty = recipe_hash[:difficulty]
-    recipe.image_url = recipe_hash[:image]
+    tags = recipe_hash.delete(:tags).map do |tag|
+      Tag.find_or_create_by(title: tag)
+    end
 
-    recipe.rate = recipe_hash[:rate].to_f
+    Recipe.find_or_create_by(name: recipe_hash[:name]) do |recipe|
+      recipe.author = recipe_hash[:author]
+      recipe.author_tip = recipe_hash[:author_tip]
+      recipe.budget = recipe_hash[:budget]
+      recipe.difficulty = recipe_hash[:difficulty]
+      recipe.image_url = recipe_hash[:image]
 
-    recipe.prep_time = duration_to_minutes(recipe_hash[:prep_time])
-    recipe.cook_time = duration_to_minutes(recipe_hash[:cook_time])
-    recipe.total_time = duration_to_minutes(recipe_hash[:total_time])
-    recipe.people_quantity = recipe_hash[:people_quantity].to_i
-    recipe.nb_comments = recipe_hash[:nb_comments].to_i
+      recipe.rate = recipe_hash[:rate].to_f
 
-    recipe.tags = tags
+      recipe.prep_time = duration_to_minutes(recipe_hash[:prep_time])
+      recipe.cook_time = duration_to_minutes(recipe_hash[:cook_time])
+      recipe.total_time = duration_to_minutes(recipe_hash[:total_time])
+      recipe.people_quantity = recipe_hash[:people_quantity].to_i
+      recipe.nb_comments = recipe_hash[:nb_comments].to_i
+
+      recipe.tags = tags
+      recipe.ingredients = ingredients.shuffle.take(ingredients_count)
+    end
   end
 end
+
+create_recipes
