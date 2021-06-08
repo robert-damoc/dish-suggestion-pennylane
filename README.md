@@ -1,24 +1,24 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Setup steps:
 
-Things you may want to cover:
+1. Setup the database, by running
 
-* Ruby version
+   ```bash
+   rake db:create db:migrate
+   ```
+2. Run the seeds to add recipes, ingredients and tags
 
-* System dependencies
+   ```bash
+   rake db:seed
+   ```
+3. Run the following rake task to add identifiers to ingredients (the most used ingredient will have the lowest identifier value)
 
-* Configuration
+   ```bash
+   rake compute_ingredients_identifiers
+   ```
+4. Run the following rake task to add the ingredients identifier to the recipes - this identifier represents the OR operation of each ingredient identifier the recipe contains
 
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+   ```bash
+   compute_recipe_ingredients_identifier
+   ```
