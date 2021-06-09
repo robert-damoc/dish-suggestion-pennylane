@@ -13,11 +13,14 @@
 .custom-button.btn {
   background-color: #293241;
   color: #FFF;
-  border: none;
+  border: 2px solid transparent;
+  font-size: 1.05rem !important;
+  padding: .7rem 1.5rem;
 }
 .custom-button.btn:hover {
-  color: #FFF !important;
-  border: none;
+  background-color: transparent;
+  border: 2px solid #293241;
+  color: #000 !important;
 }
 .hero {
   width: 100vw;
@@ -33,4 +36,40 @@
   height: 100%;
   width: 100%;
   opacity: 0.4;
+}
+.bg-image {
+  background-image: url("background.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.display-4 {
+  text-transform: uppercase;
+  font-weight: 600 !important;
+  font-size: calc(1.475rem + 3.7vw) !important;
+}
+.lead {
+  font-size: 1.55rem !important;
+}
+.card-img-top {
+  height: calc(35vh);
+}
+.card-title {
+  font-size: calc(1.1rem + .3vw);
+  font-weight: normal;
+}
+.card {
+  height: 58vh;
+}
+.card-body {
+  flex-direction: column;
+}
+.recipes-container {
+  padding-top: 0 !important;
+}
+.py-5 {
+  width: 75% !important;
+}
+.navigatio-button {
+  margin-bottom: 15px;
 }

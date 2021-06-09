@@ -1,5 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Title from "./common/Title";
+import RecipeCard from "./common/RecipeCard";
 
 class Recipes extends React.Component {
   constructor(props) {
@@ -22,48 +24,53 @@ class Recipes extends React.Component {
         .catch(() => this.props.history.push('/'));
   }
 
-  render() {
+  renderRecipes() {
     const { recipes } = this.state;
-    const allRecipes = recipes.map((recipe, index) => (
-      <div key={index} className="col-md-6 col-lg-4">
-        <div className="card mb-4">
-          <img src={recipe.image} className="card-img-top" alt={`${recipe.name} image`} />
-          <div className="card-body">
-            <h5 className="card-title">{recipe.name}</h5>
-            <Link to={`/recipe/${recipe.id}`} className="btn custom-button">
-              View Recipe
-            </Link>
+
+    if (recipes.length <= 0) {
+      return (
+        <div className="row">
+          <div className="vw-100 vh-50 d-flex align-items-center justify-content-center">
+            <h4>No recipes yet.</h4>
           </div>
         </div>
-      </div>
-    ));
+      );
+    }
 
-    const noRecipe = (
-      <div className="vw-100 vh-50 d-flex align-items-center justify-content-center">
-        <h4>No recipes yet.</h4>
-      </div>
-    );
+    let recipesList = []
+
+    for (let i = 0; i < recipes.length; i += 3) {
+      recipesList.push(
+        <div className="row" key={"row-" + i / 3}>
+          {recipes[i] ? <RecipeCard recipe = {recipes[i]} key = {i} /> : null}
+          {recipes[i + 1] ? <RecipeCard recipe = {recipes[i + 1]} key = {i + 1} /> : null}
+          {recipes[i + 2] ? <RecipeCard recipe = {recipes[i + 2]} key = {i + 2} /> : null}
+        </div>
+      );
+    }
+
+    return recipesList;
+  }
+
+  render() {
+    const subtitleText = "We’ve pulled together our most popular recipes " +
+                         "so there’s sure to be something tempting for you."
 
     return (
       <>
         <section className="jumbotron jumbotron-fluid text-center">
           <div className="container py-5">
-            <h1 className="display-4">Recipes for every occasion</h1>
-            <p className="lead text-muted">
-              We’ve pulled together our most popular recipes, our latest
-              additions, and our editor’s picks, so there’s sure to be something
-              tempting for you to try.
-            </p>
+            <Title titleText = "List of Recipes" subtitleText = {subtitleText} />
           </div>
         </section>
-        <div className="py-5">
+        <div className="recipes-container">
           <main className="container">
-            <div className="row">
-              {recipes.length > 0 ? allRecipes : noRecipe}
+            {this.renderRecipes()}
+            <div className="d-flex justify-content-center">
+              <Link to="/" className="btn btn-lg custom-button navigatio-button">
+                Home
+              </Link>
             </div>
-            <Link to="/" className="btn custom-button">
-              Home
-            </Link>
           </main>
         </div>
       </>
