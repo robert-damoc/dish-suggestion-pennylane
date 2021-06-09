@@ -22,3 +22,7 @@ Setup steps:
    ```bash
    compute_recipe_ingredients_identifier
    ```
+
+To start the app, just run `rails s`
+
+If you want to do live changes in the UI, also run `./bin/webpack-dev-server`
