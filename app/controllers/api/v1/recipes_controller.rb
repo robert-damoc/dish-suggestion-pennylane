@@ -2,12 +2,10 @@ module Api
   module V1
     class RecipesController < ApplicationController
       def index
-        params[:ingredients] = Ingredient.order('RANDOM()').limit(60).pluck(:title) if params[:test]
-
         recipe = if params[:ingredients]
                    filter_by_ingredients
                  else
-                   Recipe.order('RANDOM()').first(6)
+                   Recipe.first(6)
                  end
 
         render json: recipe

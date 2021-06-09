@@ -70,6 +70,16 @@
 .py-5 {
   width: 75% !important;
 }
-.navigatio-button {
-  margin-bottom: 15px;
+.navigation-button {
+  margin: 9px auto;
+  padding: .4rem 3rem !important;
+}
+.multi-select {
+  width: 100vw;
+  margin: 10px auto;
+  padding-left: 0;
+  padding-right: var(--bs-gutter-x,.75rem)
+}
+.filter-container {
+  padding-bottom: 20px !important;
 }

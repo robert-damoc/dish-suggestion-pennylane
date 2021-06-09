@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Title from "./common/Title";
 import RecipeCard from "./common/RecipeCard";
+import IngredientsFilter from "./IngredientsFilter";
 
 class Recipes extends React.Component {
   constructor(props) {
@@ -9,10 +10,34 @@ class Recipes extends React.Component {
     this.state = {
       recipes: []
     };
+
+    this.fetchRecipesFiltered = this.fetchRecipesFiltered.bind(this);
   }
 
   componentDidMount() {
       const url = '/api/v1/recipes';
+
+      fetch(url)
+        .then(response => {
+          if (response.ok) { return response.json(); }
+
+          throw new Error('Network response was not ok.');
+        })
+        .then(response => this.setState({ recipes: response }))
+        .catch(() => this.props.history.push('/'));
+  }
+
+  fetchRecipes(ingredients_params) {
+    let url = '/api/v1/recipes';
+
+    if (ingredients_params) {
+      url += '?';
+      ingredients_params.forEach((ingredient, index) => {
+        if (index !== 0) { url += '&'; }
+
+        url += `ingredients[]=${encodeURIComponent(ingredient.value)}`;
+      });
+    }
 
       fetch(url)
         .then(response => {
@@ -39,7 +64,7 @@ class Recipes extends React.Component {
 
     let recipesList = []
 
-    for (let i = 0; i < recipes.length; i += 3) {
+    for (let i = 0; i < recipes.length && i < 6; i += 3) {
       recipesList.push(
         <div className="row" key={"row-" + i / 3}>
           {recipes[i] ? <RecipeCard recipe = {recipes[i]} key = {i} /> : null}
@@ -50,6 +75,12 @@ class Recipes extends React.Component {
     }
 
     return recipesList;
+  }
+
+  fetchRecipesFiltered(ingredients) {
+    if (ingredients.length === 0) { return; }
+
+    this.fetchRecipes(ingredients);
   }
 
   render() {
@@ -63,16 +94,17 @@ class Recipes extends React.Component {
             <Title titleText = "List of Recipes" subtitleText = {subtitleText} />
           </div>
         </section>
-        <div className="recipes-container">
-          <main className="container">
-            {this.renderRecipes()}
-            <div className="d-flex justify-content-center">
-              <Link to="/" className="btn btn-lg custom-button navigatio-button">
-                Home
-              </Link>
-            </div>
-          </main>
+        <div className="container d-flex justify-content-center filter-container">
+          <IngredientsFilter filterCb={this.fetchRecipesFiltered} />
         </div>
+        <main className="container recipes-container">
+          {this.renderRecipes()}
+          <div className="d-flex justify-content-center">
+            <Link to="/" className="btn btn-lg custom-button navigatio-button">
+              Home
+            </Link>
+          </div>
+        </main>
       </>
     );
   }
