@@ -75,11 +75,19 @@
   padding: .4rem 3rem !important;
 }
 .multi-select {
-  width: 100vw;
+  width: 80vw;
   margin: 10px auto;
   padding-left: 0;
   padding-right: var(--bs-gutter-x,.75rem)
 }
 .filter-container {
   padding-bottom: 20px !important;
+}
+.recipe-name {
+  margin-left: 1em;
+  margin-right: 1em;
+  font-size: calc(1.475rem + 2.4vw) !important;
+}
+.margin-top {
+  margin-top: 3rem;
 }

@@ -13,7 +13,7 @@ module Api
 
       def show
         if recipe
-          render json: recipe
+          render json: { recipe: recipe, ingredients: recipe.ingredients }
         else
           render json: recipe.errors
         end
@@ -22,7 +22,7 @@ module Api
       private
 
       def recipe
-        @recipe ||= Recipe.find(params[:id])
+        @recipe ||= Recipe.includes(:ingredients).find(params[:id])
       end
 
       def filter_by_ingredients
