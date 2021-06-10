@@ -26,3 +26,6 @@ Setup steps:
 To start the app, just run `rails s`
 
 If you want to do live changes in the UI, also run `./bin/webpack-dev-server`
+
+
+You can also access the app the the following link: [Heroku App](https://dish-suggestion-pennylane.herokuapp.com/)
