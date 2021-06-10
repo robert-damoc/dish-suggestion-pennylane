@@ -20,7 +20,7 @@ Setup steps:
 4. Run the following rake task to add the ingredients identifier to the recipes - this identifier represents the OR operation of each ingredient identifier the recipe contains
 
    ```bash
-   compute_recipe_ingredients_identifier
+   rake compute_recipe_ingredients_identifier
    ```
 
 To start the app, just run `rails s`
